@@ -4,14 +4,6 @@ import { getDocs } from 'firebase/firestore';
 import {  TailSpin } from 'react-loader-spinner';
 import { moviesRef } from '../firebase/firebase';
 import { Link } from 'react-router-dom';
-// {
-//     name: 'Forest Gump',
-//     year: '1984',
-//     img: 'https://www.themoviedb.org/t/p/original/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg',
-//     rating: 2.5
-// },
-
-
 
 const Cards = () => {
     const [data, setData] = useState([]);
