@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactStars from 'react-stars'
 import { useParams } from 'react-router-dom';
-import { doc, getDoc, getDocs } from 'firebase/firestore';
-import { moviesRef, reviewRef } from '../firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import Reviews from './Reviews';
 
