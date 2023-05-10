@@ -1,42 +1,53 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import ReactStars from 'react-stars'
 import { reviewRef, db } from '../firebase/firebase'
 import { addDoc, doc, updateDoc,query, where,getDocs } from 'firebase/firestore'
 import { TailSpin } from 'react-loader-spinner'
 import swal from 'sweetalert'
+import { Appstate } from '../App'
+import { useNavigate } from 'react-router-dom';
+
 
 const Reviews = ({id, rated, prevRating}) => {
-    console.log(id);
+    const useAppstate = useContext(Appstate)
+    const navigate = useNavigate();
     const [rating, setRating] = useState(0);
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState("")
     const [data,setData] = useState([]);
+    const [newAdded, setNewAdded] = useState(false);
 
     const sendReview = async() => {
         try{
-            setLoading(true);
-            await addDoc(reviewRef,{
-                movieid: id,
-                name: "Kashyap",
-                rating: rating,
-                thought: form,
-                timestamp: new Date().getTime()
-            })
-            const ref = doc(db,"movies",id);
-            await updateDoc(ref,
-                {   
-                    rating: prevRating + 1,
-                    rated: rated + 1,
+            if(useAppstate.login){
+                setLoading(true);
+                await addDoc(reviewRef,{
+                    movieid: id,
+                    name: useAppstate.username,
+                    rating: rating,
+                    thought: form,
+                    timestamp: new Date().getTime()
                 })
-            setRating(0);
-            setForm('');
-            swal({
-                title: "review sent",
-                icon: "success",
-                buttons: false,
-                timer: 3000
-            })
-            setLoading(false);
+                const ref = doc(db,"movies",id);
+                await updateDoc(ref,
+                    {   
+                        rating: prevRating + 1,
+                        rated: rated + 1,
+                    })
+                setRating(0);
+                setForm('');
+                swal({
+                    title: "review sent",
+                    icon: "success",
+                    buttons: false,
+                    timer: 3000
+                })
+                setLoading(false);
+                setNewAdded(true);
+            }
+            else{
+                navigate('/login')
+            }
         }
         catch (err) {
             swal({
@@ -50,6 +61,7 @@ const Reviews = ({id, rated, prevRating}) => {
 
     useEffect(() => {
         async function getData() {
+            setData([]);
             console.log(id);
             let quer = query(reviewRef, where('movieid', '==', id))
             const querySnapshot = await getDocs(quer)
@@ -59,7 +71,7 @@ const Reviews = ({id, rated, prevRating}) => {
             })
         }
         getData();
-    }, [])
+    }, [newAdded]);
 
     return (
         <div className="mt-2  border-t-2 border-green-700 w-full">
