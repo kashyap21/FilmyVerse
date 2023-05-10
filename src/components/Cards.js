@@ -10,7 +10,6 @@ const Cards = () => {
 
     const[loading, setLoading] = useState(false);
 
-
     useEffect(()=>{
       async function getData(){
         setLoading(true);
